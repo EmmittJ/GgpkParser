@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Emmitt\.nuget\packages\wpfhexaeditor\2.0.2\contentFiles\any\netcoreapp3.0\Resources\EBCDIC-NoSpecialChar.tbl" />
+    <Content Remove="C:\Users\Emmitt\.nuget\packages\wpfhexaeditor\2.0.2\contentFiles\any\netcoreapp3.0\Resources\EBCDIC.tbl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WPFHexaEditor" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GgpkParser\GgpkParser.csproj" />
+  </ItemGroup>
+
+</Project>
