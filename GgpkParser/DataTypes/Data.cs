@@ -1,7 +1,4 @@
-﻿using GgpkParser.Extensions;
-using System.IO;
-
-namespace GgpkParser.DataTypes
+﻿namespace GgpkParser.DataTypes
 {
     public class Data
     {

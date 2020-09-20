@@ -2,9 +2,7 @@
 using GgpkParser.Extensions;
 using GgpkParser.Libs;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace GgpkParser.Bundles
 {
@@ -20,7 +18,7 @@ namespace GgpkParser.Bundles
 
             stream.Position = data.Offset;
             BundleHeader = new BundleHeader(stream);
-            
+
             BundlePayloadOffset = stream.Position;
             BundlePayload = new BundlePayload(stream);
 

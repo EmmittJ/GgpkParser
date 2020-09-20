@@ -1,8 +1,6 @@
 ﻿using GgpkParser.Bundles;
 using GgpkParser.Bundles.Index;
-using GgpkParser.Extensions;
 using System.IO;
-using System.Text;
 
 namespace GgpkParser.DataTypes.Specifications
 {

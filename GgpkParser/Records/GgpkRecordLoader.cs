@@ -6,8 +6,6 @@ using GgpkParser.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Transactions;
 
 namespace GgpkParser.Records
 {
@@ -85,38 +83,42 @@ namespace GgpkParser.Records
             }
         }
 
-        public IDataSpecification LoadRecord(FileRecord record)
-        {
-            var spec = GgpkDataLoader.CreateDataSpecification(record.Name);
-            spec.LoadFrom(Stream, record.Data);
-            return spec;
-        }
+        public IDataSpecification LoadRecord(FileRecord record) => LoadRecord(Stream, record.Name, record.Data);
 
         public IDataSpecification LoadRecord(string path)
         {
+            var record = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == path.Split(Path.AltDirectorySeparatorChar)[^1]);
+            if (!(record is null))
+            {
+                return LoadRecord(record);
+            }
+
             if (IndexBin is null)
             {
                 return new RawBytesSpecification();
             }
 
-            var info = IndexBin.FileInfos.First(x => x.Path == path);
+            var info = IndexBin.FileInfos.FirstOrDefault(x => x.Path == path);
             if (info is null)
             {
                 return new RawBytesSpecification();
             }
 
             var bundleInfo = IndexBin.BundleInfos[info.BundleIndex];
-            var bundleFile = Records[RecordType.File].OfType<FileRecord>().First(x => x.Name == bundleInfo.BundleName);
+            var bundleFile = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == bundleInfo.BundleName);
 
             var bundle = new Bundle(Stream, bundleFile.Data);
             using var memory = new MemoryStream(bundle.Decompress(Stream));
-            
-            var spec = GgpkDataLoader.CreateDataSpecification(path);
-            spec.LoadFrom(memory, new Data(info.Offset, info.Length));
-            return spec;
-            //var spec = GgpkDataLoader.CreateDataSpecification(record.Name);
-            //spec.LoadFrom(Stream, record.Data);
-            //return spec;
+
+            return LoadRecord(memory, path, new Data(info.Offset, info.Length));
         }
+
+        public IDataSpecification LoadRecord(in Stream stream, string name, Data data)
+        {
+            var spec = GgpkDataLoader.CreateDataSpecification(name);
+            spec.LoadFrom(stream, data);
+            return spec;
+        }
+
     }
 }

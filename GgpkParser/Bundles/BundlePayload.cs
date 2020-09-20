@@ -1,9 +1,5 @@
-﻿using GgpkParser.DataTypes;
-using GgpkParser.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using GgpkParser.Extensions;
 using System.IO;
-using System.Text;
 
 namespace GgpkParser.Bundles
 {
