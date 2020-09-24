@@ -19,7 +19,7 @@ namespace GgpkParser.DataTypes
                 select new { Type = t, Priority = filtered.Max(x => x.Priority) };
             
             var type = types.OrderByDescending(x => x.Priority).First();
-            return Activator.CreateInstance(type.Type) as IDataSpecification ?? new RawBytesSpecification();
+            return Activator.CreateInstance(type.Type, name) as IDataSpecification ?? new RawBytesSpecification();
         }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkParser", "GgpkParser\Gg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkDisplay", "GgpkDisplay\GgpkDisplay.csproj", "{9F6E05CB-7450-46B9-8BEF-9D2D931E2C32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GgpkFileSystem", "GgpkFileSystem\GgpkFileSystem.csproj", "{7FE204F5-33C9-432C-845F-522FB1715766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkFileSystem", "GgpkFileSystem\GgpkFileSystem.csproj", "{7FE204F5-33C9-432C-845F-522FB1715766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

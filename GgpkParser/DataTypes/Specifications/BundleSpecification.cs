@@ -7,6 +7,10 @@ namespace GgpkParser.DataTypes.Specifications
     public class BundleSpecification : IDataSpecification
     {
         public byte[] RawData { get; private set; } = new byte[0];
+        public string Name { get; }
+
+        public BundleSpecification(string name = "") => Name = name;
+
         public void LoadFrom(in Stream stream, Data data)
         {
             var bundle = new Bundle(stream, data);

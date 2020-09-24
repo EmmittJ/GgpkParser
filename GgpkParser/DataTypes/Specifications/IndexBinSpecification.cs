@@ -9,6 +9,9 @@ namespace GgpkParser.DataTypes.Specifications
     {
         public byte[] RawData { get; private set; } = new byte[0];
         public IndexBin? IndexBin { get; private set; }
+        public string Name { get; }
+
+        public IndexBinSpecification(string name = "") => Name = name;
 
         public void LoadFrom(in Stream stream, Data data)
         {

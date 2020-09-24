@@ -16,7 +16,18 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TreeView x:Name="GgpkFileExplorer" Width="Auto" Background="#FFFFFFFF" BorderBrush="#FFFFFFFF" Foreground="#FFFFFFFF" Grid.Column="0" Grid.RowSpan="2">
+
+        <StackPanel Grid.Column="0" Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label>Filter:</Label>
+                <TextBox x:Name="GgpkFilter" KeyUp="GgpkFilter_KeyUp"  Grid.Column="1" Margin="2"></TextBox>
+            </Grid>
+        </StackPanel>
+        <TreeView x:Name="GgpkFileExplorer" Width="Auto" Background="#FFFFFFFF" BorderBrush="#FFFFFFFF" Foreground="#FFFFFFFF" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
             <TreeView.Resources>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="HeaderTemplate">
@@ -32,8 +43,45 @@
             </TreeView.Resources>
         </TreeView>
         <TextBlock x:Name="FileLabel" Grid.Column="1" Grid.Row="0" Text="File: "/>
-        <WPFHexaEditor:HexEditor x:Name="GgpkFileHexEditor" Grid.Column="1" Grid.Row="1"/>
-        <TextBlock x:Name="GgpkTextEditor" Grid.Column="1" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        <TabControl x:Name="GgpkFileTab" Grid.Column="1" Grid.Row="1">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border     Name="Border"
+                                            Margin="2,0"
+                                            BorderBrush="Gainsboro"
+                                            BorderThickness="1,1,1,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ContentPresenter
+                                                    x:Name="ContentSite"
+                                                    Margin="10,2"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    ContentSource="Header" />
+                                    </StackPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="HexEditor" IsSelected="True">
+                <WPFHexaEditor:HexEditor x:Name="GgpkHexEditor"/>
+            </TabItem>
+            <TabItem Header="DataGrid" Visibility="Hidden">
+                <DataGrid x:Name="GgpkDataGrid" Margin="2"/>
+            </TabItem>
+        </TabControl>
         <GridSplitter Grid.Column="0" Width="3" Grid.RowSpan="2"/>
     </Grid>
 </Window>

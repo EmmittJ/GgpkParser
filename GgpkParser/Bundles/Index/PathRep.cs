@@ -43,14 +43,7 @@ namespace GgpkParser.Bundles.Index
                         path = $"{bases[index]}{path}";
                     }
 
-                    if (isBasePhase)
-                    {
-                        bases.Add(path);
-                    }
-                    else
-                    {
-                        results.Add(path);
-                    }
+                    (isBasePhase ? bases : results).Add(path);
                 }
             }
 

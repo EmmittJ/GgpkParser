@@ -83,14 +83,13 @@ namespace GgpkParser.Records
             }
         }
 
-        public IDataSpecification LoadRecord(FileRecord record) => LoadRecord(Stream, record.Name, record.Data);
-
         public IDataSpecification LoadRecord(string path)
         {
-            var record = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == path.Split(Path.AltDirectorySeparatorChar)[^1]);
+            var name = path.Split(Path.AltDirectorySeparatorChar)[^1];
+            var record = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == name);
             if (!(record is null))
             {
-                return LoadRecord(record);
+                return LoadRecord(Stream, record.Name, record.Data);
             }
 
             if (IndexBin is null)
@@ -110,7 +109,7 @@ namespace GgpkParser.Records
             var bundle = new Bundle(Stream, bundleFile.Data);
             using var memory = new MemoryStream(bundle.Decompress(Stream));
 
-            return LoadRecord(memory, path, new Data(info.Offset, info.Length));
+            return LoadRecord(memory, name, new Data(info.Offset, info.Length));
         }
 
         public IDataSpecification LoadRecord(in Stream stream, string name, Data data)
