@@ -55,6 +55,7 @@ namespace GgpkParser.DataTypes.Dat
             "float" => typeof(float),
             "double" => typeof(double),
             "string" => typeof(string),
+            "generic" => typeof(uint),
             _ => throw new InvalidCastException(),
         };
     }

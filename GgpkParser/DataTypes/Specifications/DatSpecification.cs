@@ -81,10 +81,10 @@ namespace GgpkParser.DataTypes.Specifications
                         {
                             var elements = memory.Read<uint>();
                             var offset = start + memory.Read<uint>();
-                            
+
                             var builder = new StringBuilder();
                             builder.Append("[");
-                            
+
                             if (field.FieldType.DefinedType == typeof(string))
                             {
                                 var current = memory.Position;
@@ -95,7 +95,7 @@ namespace GgpkParser.DataTypes.Specifications
                                     var innerOffset = start + memory.Read<uint>();
                                     var x = ReadReferenceValue(memory, field.FieldType.DefinedType, innerOffset);
                                     if (string.IsNullOrWhiteSpace(x.ToString())) continue;
-                                    
+
                                     builder.Append(x.ToString());
                                     if (j < elements - 1) builder.Append(", ");
                                 }
@@ -107,7 +107,7 @@ namespace GgpkParser.DataTypes.Specifications
                                 for (var j = 0; j < elements; j++)
                                 {
                                     var x = ReadReferenceValue(memory, field.FieldType.DefinedType, offset + (j * field.FieldType.Size));
-                                    
+
                                     builder.Append(x);
                                     if (j < elements - 1) builder.Append(", ");
                                 }
