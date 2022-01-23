@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkParser", "GgpkParser\Gg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkDisplay", "GgpkDisplay\GgpkDisplay.csproj", "{9F6E05CB-7450-46B9-8BEF-9D2D931E2C32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GgpkFileSystem", "GgpkFileSystem\GgpkFileSystem.csproj", "{7FE204F5-33C9-432C-845F-522FB1715766}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GgpkBenchmark", "GgpkBenchmark\GgpkBenchmark.csproj", "{2DA557EB-2DB0-4E6F-BBAD-4769942B8D77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{9F6E05CB-7450-46B9-8BEF-9D2D931E2C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F6E05CB-7450-46B9-8BEF-9D2D931E2C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F6E05CB-7450-46B9-8BEF-9D2D931E2C32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FE204F5-33C9-432C-845F-522FB1715766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FE204F5-33C9-432C-845F-522FB1715766}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FE204F5-33C9-432C-845F-522FB1715766}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FE204F5-33C9-432C-845F-522FB1715766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DA557EB-2DB0-4E6F-BBAD-4769942B8D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA557EB-2DB0-4E6F-BBAD-4769942B8D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA557EB-2DB0-4E6F-BBAD-4769942B8D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA557EB-2DB0-4E6F-BBAD-4769942B8D77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

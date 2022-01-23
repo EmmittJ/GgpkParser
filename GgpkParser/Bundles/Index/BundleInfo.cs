@@ -11,11 +11,15 @@ namespace GgpkParser.Bundles.Index
             NameLength = stream.Read<int>();
             Name = Encoding.ASCII.GetString(stream.Read<byte>(NameLength));
             UncompressedSize = stream.Read<int>();
+
+            BundleName = Name.EndsWith(".bundle.bin") ? Name : $"{Name}.bundle.bin";
+            FileName = Path.GetFileName(BundleName);
         }
 
         public int NameLength { get; }
         public string Name { get; }
-        public string BundleName => Name.EndsWith(".bundle.bin") ? Name : $"{Name}.bundle.bin";
+        public string BundleName { get; }
+        public string FileName { get; }
         public int UncompressedSize { get; }
     }
 }

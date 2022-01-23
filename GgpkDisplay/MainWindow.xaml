@@ -6,7 +6,7 @@
         xmlns:WPFHexaEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         xmlns:local="clr-namespace:GgpkDisplay"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="MainWindow" Height="750" Width="1350" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -79,7 +79,7 @@
                 <WPFHexaEditor:HexEditor x:Name="GgpkHexEditor"/>
             </TabItem>
             <TabItem Header="DataGrid" Visibility="Hidden">
-                <DataGrid x:Name="GgpkDataGrid" Margin="2"/>
+                <DataGrid x:Name="GgpkDataGrid" Margin="2" ClipboardCopyMode="ExcludeHeader" />
             </TabItem>
         </TabControl>
         <GridSplitter Grid.Column="0" Width="3" Grid.RowSpan="2"/>

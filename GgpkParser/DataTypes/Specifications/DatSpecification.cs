@@ -1,4 +1,4 @@
-﻿using GgpkParser.DataTypes.Dat;
+﻿using GgpkParser.DataTypes.DatSchema;
 using GgpkParser.Extensions;
 using System;
 using System.Data;
@@ -16,15 +16,23 @@ namespace GgpkParser.DataTypes.Specifications
         public byte[] RawData { get; private set; } = new byte[0];
         public DataTable DataTable { get; private set; } = new DataTable();
         public string Name { get; }
-        public DatFileSpecificationJson? Specification { get; } = null;
+        public SchemaTable? Table { get; set; }
+        public SchemaEnumeration? Enumeration { get; set; }
         public int RowCount { get; private set; }
 
         public DatSpecification(string name = "")
         {
             Name = name;
-            if (DatSpecificationJson.Default.ContainsKey(Name))
+
+            var nameWithoutExtension = Path.GetFileNameWithoutExtension(Name);
+            if (DatSchemaSpecification.Default.Tables.FirstOrDefault(x => x.Name == nameWithoutExtension) is SchemaTable table)
             {
-                Specification = DatSpecificationJson.Default[Name];
+                Table = table;
+            }
+
+            if (DatSchemaSpecification.Default.Enumerations.FirstOrDefault(x => x.Name == nameWithoutExtension) is SchemaEnumeration enumeration)
+            {
+                Enumeration = enumeration;
             }
         }
 
@@ -33,16 +41,18 @@ namespace GgpkParser.DataTypes.Specifications
             stream.Position = data.Offset;
             RawData = stream.Read<byte>(data.Length);
 
-            if (Specification is null)
+            if (Table is null)
             {
                 return;
             }
+
             using var memory = new MemoryStream(RawData);
 
             RowCount = memory.Read<int>();
             var start = memory.IndexOf(DataSeparator, memory.Position);
             var rowSize = RowCount > 0 ? (start - memory.Position) / RowCount : 0;
-            var size = Specification.Fields.Sum(x => x.Value.FieldType.Size);
+            var size = Table.Columns.Sum(x => x.SizeForRow);
+            var sizeDifference = rowSize - size;
 
             if (rowSize != size)
             {
@@ -58,13 +68,15 @@ namespace GgpkParser.DataTypes.Specifications
                 AutoIncrement = true,
             });
 
-            foreach (var (name, field) in Specification.Fields)
+            for (var i = 0; i < Table.Columns.Count; i++)
             {
+                var column = Table.Columns[i];
+                var name = column.Name ?? $"u{i}";
                 DataTable.Columns.Add(new DataColumn()
                 {
                     ColumnName = name,
-                    Caption = $"{name}: {field.Type}",
-                    DataType = field.FieldType.IsList ? typeof(string) : field.FieldType.DefinedType,
+                    Caption = $"{name}: {column.Type}",
+                    DataType = column.IsList || column.IsRowColumn ? typeof(string) : column.DefinedType,
                     ReadOnly = true,
                 });
             }
@@ -72,12 +84,15 @@ namespace GgpkParser.DataTypes.Specifications
             for (var i = 0; i < RowCount; i++)
             {
                 var row = DataTable.NewRow();
-                foreach (var (name, field) in Specification.Fields)
+                for (var index = 0; index < Table.Columns.Count; index++)
                 {
+                    var column = Table.Columns[index];
+                    var name = column.Name ?? $"u{index}";
+                    var type = column;
                     object? value = null;
-                    if (field.FieldType.IsReference)
+                    if (type.IsReference)
                     {
-                        if (field.FieldType.IsList)
+                        if (type.IsList)
                         {
                             var elements = memory.Read<uint>();
                             var offset = start + memory.Read<uint>();
@@ -85,7 +100,7 @@ namespace GgpkParser.DataTypes.Specifications
                             var builder = new StringBuilder();
                             builder.Append("[");
 
-                            if (field.FieldType.DefinedType == typeof(string))
+                            if (type.DefinedType == typeof(string))
                             {
                                 var current = memory.Position;
                                 memory.Position = offset;
@@ -93,7 +108,7 @@ namespace GgpkParser.DataTypes.Specifications
                                 for (var j = 0; j < elements; j++)
                                 {
                                     var innerOffset = start + memory.Read<uint>();
-                                    var x = ReadReferenceValue(memory, field.FieldType.DefinedType, innerOffset);
+                                    var x = ReadReferenceValue(memory, type.DefinedType, innerOffset);
                                     if (string.IsNullOrWhiteSpace(x.ToString())) continue;
 
                                     builder.Append(x.ToString());
@@ -106,9 +121,26 @@ namespace GgpkParser.DataTypes.Specifications
                             {
                                 for (var j = 0; j < elements; j++)
                                 {
-                                    var x = ReadReferenceValue(memory, field.FieldType.DefinedType, offset + (j * field.FieldType.Size));
+                                    object? t = null;
+                                    object? c = null;
+                                    if (type.IsRowColumn)
+                                    {
+                                        t = ReadReferenceValue(memory, type.DefinedType, offset + (j * type.Size));
+                                        c = ReadReferenceValue(memory, type.DefinedType, offset + (j * type.Size) + 4);
+                                    }
+                                    else
+                                    {
+                                        t = ReadReferenceValue(memory, type.DefinedType, offset + (j * type.Size));
+                                    }
 
-                                    builder.Append(x);
+                                    if (t is not null && c is not null)
+                                    {
+                                        builder.Append($"<{t},{c}>");
+                                    }
+                                    else
+                                    {
+                                        builder.Append(t);
+                                    }
                                     if (j < elements - 1) builder.Append(", ");
                                 }
                             }
@@ -116,26 +148,34 @@ namespace GgpkParser.DataTypes.Specifications
                             builder.Append("]");
                             value = builder.ToString();
                         }
+                        else if (type.IsRowColumn)
+                        {
+                            var t = ReadValue(memory, type.DefinedType);
+                            var c = ReadValue(memory, type.DefinedType);
+                            value = $"<{t},{c}>";
+                        }
                         else
                         {
-                            value = ReadReferenceValue(memory, field.FieldType.DefinedType, start + memory.Read<uint>());
+                            value = ReadReferenceValue(memory, type.DefinedType, start + memory.Read<uint>());
                         }
                     }
                     else
                     {
-                        value = ReadValue(memory, field.FieldType.DefinedType);
+                        value = ReadValue(memory, type.DefinedType);
                     }
 
                     row[name] = value ?? DBNull.Value;
                 }
                 DataTable.Rows.Add(row);
+                if (memory.Position + sizeDifference <= memory.Length)
+                    memory.Position += sizeDifference;
             }
-
-
         }
 
-        private object ReadReferenceValue(in Stream stream, Type type, long offset)
+        private object? ReadReferenceValue(in Stream stream, Type type, long offset)
         {
+            if (offset > stream.Length) return null;
+
             var current = stream.Position;
             stream.Position = offset;
 

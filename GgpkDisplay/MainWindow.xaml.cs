@@ -1,5 +1,4 @@
-﻿using GgpkParser.DataTypes.Dat;
-using GgpkParser.DataTypes.Specifications;
+﻿using GgpkParser.DataTypes.Specifications;
 using GgpkParser.Records;
 using System;
 using System.Collections.Generic;
@@ -58,7 +57,18 @@ namespace GgpkDisplay
                     {
                         for (var i = 0; i < GgpkRecordLoader.IndexBin.FileCount; i++)
                         {
-                            paths.Add(GgpkRecordLoader.IndexBin.FileInfos[i].Path);
+                            var path = GgpkRecordLoader.IndexBin.FileInfos[i].Path;
+                            paths.Add(path);
+                            if (path == "Art/UIImages1.txt")
+                            {
+                                if (GgpkRecordLoader.LoadRecord(path) is UIImagesSpecification uiimages)
+                                {
+                                    foreach (var image in uiimages.UIImages)
+                                    {
+                                        paths.Add(image.Path);
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -154,13 +164,23 @@ namespace GgpkDisplay
 
                     switch (spec)
                     {
-                        case DatSpecification datSpec when !(datSpec.Specification is null) && datSpec.DataTable.Columns.Count > 1:
+                        case DatSpecification datSpec when !(datSpec.Table is null) && datSpec.DataTable.Columns.Count > 1:
                             GgpkFileExplorer.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 dataTab.IsSelected = true;
                                 dataTab.Visibility = Visibility.Visible;
 
                                 GgpkDataGrid.ItemsSource = datSpec.DataTable.DefaultView;
+                                GgpkHexEditor.Stream = new MemoryStream(spec.RawData);
+                            }));
+                            break;
+                        case UIImagesSpecification uIImagesSpecification when (uIImagesSpecification.UIImages.Count > 0 && uIImagesSpecification.DataTable.Columns.Count > 1):
+                            GgpkFileExplorer.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                dataTab.IsSelected = true;
+                                dataTab.Visibility = Visibility.Visible;
+
+                                GgpkDataGrid.ItemsSource = uIImagesSpecification.DataTable.DefaultView;
                                 GgpkHexEditor.Stream = new MemoryStream(spec.RawData);
                             }));
                             break;
@@ -204,7 +224,7 @@ namespace GgpkDisplay
                 {
                     _filterTimer = new System.Timers.Timer()
                     {
-                        Interval = 500
+                        Interval = 250
                     };
 
                     _filterTimer.Elapsed += FilterTimer_Elapsed;

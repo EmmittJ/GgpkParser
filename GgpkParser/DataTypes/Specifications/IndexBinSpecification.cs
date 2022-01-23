@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GgpkParser.DataTypes.Specifications
 {
-    [DataSpecification(FileExtension = "_.index.bin", Priority = 10)]
+    [DataSpecification(FileExtension = "_.index.bin", Priority = 100)]
     public class IndexBinSpecification : IDataSpecification
     {
         public byte[] RawData { get; private set; } = new byte[0];

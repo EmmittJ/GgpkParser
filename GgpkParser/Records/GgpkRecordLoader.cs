@@ -104,7 +104,7 @@ namespace GgpkParser.Records
             }
 
             var bundleInfo = IndexBin.BundleInfos[info.BundleIndex];
-            var bundleFile = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == bundleInfo.BundleName);
+            var bundleFile = Records[RecordType.File].OfType<FileRecord>().FirstOrDefault(x => x.Name == bundleInfo.BundleName || x.Name == bundleInfo.FileName);
 
             var bundle = new Bundle(Stream, bundleFile.Data);
             using var memory = new MemoryStream(bundle.Decompress(Stream));
