@@ -12,9 +12,9 @@ namespace GgpkParser.DataTypes
                 from a in AppDomain.CurrentDomain.GetAssemblies().AsParallel()
                 from t in a.GetTypes()
                 where typeof(IDataSpecification).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract
-                let attributes = t.GetCustomAttributes(typeof(DataSpecificationAttribute), true)
+                let attributes = t.GetCustomAttributes(typeof(SpecificationAttribute), true)
                 where attributes != null && attributes.Length > 0
-                let filtered = attributes.Cast<DataSpecificationAttribute>().Where(x => name.EndsWith(x.FileExtension) || string.IsNullOrWhiteSpace(x.FileExtension))
+                let filtered = attributes.Cast<SpecificationAttribute>().Where(x => name.EndsWith(x.FileExtension) || string.IsNullOrWhiteSpace(x.FileExtension))
                 where filtered != null && filtered.Any()
                 select new { Type = t, Priority = filtered.Max(x => x.Priority) };
             

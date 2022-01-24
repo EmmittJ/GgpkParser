@@ -7,7 +7,7 @@ using System.Text;
 
 namespace GgpkParser.DataTypes.DatSchema
 {
-    public class DatSchemaSpecification
+    public class SchemaFileService
     {
         private static SchemaFile? _datSpecJson { get; set; } = null;
         public static SchemaFile Default

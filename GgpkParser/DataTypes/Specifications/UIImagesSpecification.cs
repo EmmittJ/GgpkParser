@@ -9,11 +9,11 @@ using System.Text;
 
 namespace GgpkParser.DataTypes.Specifications
 {
-    [DataSpecification(FileExtension = "UIImages1.txt", Priority = 1)]
-    [DataSpecification(FileExtension = "UIDivinationImages.txt", Priority = 1)]
-    [DataSpecification(FileExtension = "UIPS4.txt", Priority = 1)]
-    [DataSpecification(FileExtension = "UIShopImages.txt", Priority = 1)]
-    [DataSpecification(FileExtension = "UIXbox.txt", Priority = 1)]
+    [Specification(FileExtension = "UIImages1.txt", Priority = 1)]
+    [Specification(FileExtension = "UIDivinationImages.txt", Priority = 1)]
+    [Specification(FileExtension = "UIPS4.txt", Priority = 1)]
+    [Specification(FileExtension = "UIShopImages.txt", Priority = 1)]
+    [Specification(FileExtension = "UIXbox.txt", Priority = 1)]
     public class UIImagesSpecification : IDataSpecification
     {
         public byte[] RawData { get; private set; } = new byte[0];

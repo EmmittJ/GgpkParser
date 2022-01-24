@@ -3,7 +3,7 @@ using System.IO;
 
 namespace GgpkParser.DataTypes.Specifications
 {
-    [DataSpecification(Priority = 0)]
+    [Specification(Priority = 0)]
     public class RawBytesSpecification : IDataSpecification
     {
         public byte[] RawData { get; private set; } = new byte[0];
