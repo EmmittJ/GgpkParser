@@ -40,7 +40,7 @@ namespace GgpkParser.DataTypes.DatSchema
 
     public class TableColumn
     {
-        public IFieldData FieldData => IFieldData.From(Array, Type);
+        public IFieldData FieldData => IFieldData.From(this, Array, Type);
 
         public string? Name { get; set; }
         public string? Description { get; set; }
@@ -58,6 +58,5 @@ namespace GgpkParser.DataTypes.DatSchema
     {
         public string Table { get; set; } = string.Empty;
         public string? Column { get; set; }
-
     }
 }

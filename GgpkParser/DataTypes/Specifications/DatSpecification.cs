@@ -21,7 +21,6 @@ namespace GgpkParser.DataTypes.Specifications
         public DataTable DataTable { get; private set; } = new DataTable();
         public string Name { get; }
         public SchemaTable? Table { get; set; }
-        public SchemaEnumeration? Enumeration { get; set; }
         public int RowCount { get; private set; }
 
         [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "X64 looks bad.")]
@@ -39,11 +38,6 @@ namespace GgpkParser.DataTypes.Specifications
             if (SchemaFileService.Default.Tables.FirstOrDefault(x => x.Name == nameWithoutExtension) is SchemaTable table)
             {
                 Table = table;
-            }
-
-            if (SchemaFileService.Default.Enumerations.FirstOrDefault(x => x.Name == nameWithoutExtension) is SchemaEnumeration enumeration)
-            {
-                Enumeration = enumeration;
             }
         }
 

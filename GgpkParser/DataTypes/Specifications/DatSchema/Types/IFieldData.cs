@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GgpkParser.DataTypes.DatSchema;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -16,12 +17,12 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
         public Type Type { get; }
         public IFieldData Read(in Stream stream, bool x64, bool UTF32);
 
-        public static IFieldData From(bool array, string value)
+        public static IFieldData From(TableColumn column, bool array, string value)
         {
             var fieldType = FieldTypeFromString(value);
             return fieldType switch
             {
-                _ when array => new ReferenceDataArray(From(false, value)),
+                _ when array => new ReferenceDataArray(From(column, false, value)),
                 FieldType.Unknown => new FieldDataUnknown(),
                 FieldType.Bool => new FieldDataBool(),
                 FieldType.SByte => new FieldDataSByte(),
@@ -37,7 +38,7 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
                 FieldType.String => new ReferenceDataString(),
                 FieldType.Row => new FieldDataRow(),
                 FieldType.ForeignRow => new FieldDataForeignRow(),
-                FieldType.EnumRow => new FieldDataEnumRow(),
+                FieldType.EnumRow => new FieldDataEnumRow(column),
                 _ => throw new NotImplementedException(),
             };
         }
