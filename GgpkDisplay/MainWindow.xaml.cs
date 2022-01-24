@@ -42,7 +42,7 @@ namespace GgpkDisplay
             }).Start();
         }
 
-        private object buildlock = new object();
+        private readonly object buildlock = new();
         private void BuildDirectory(string pattern = "")
         {
             lock (buildlock)
@@ -53,7 +53,7 @@ namespace GgpkDisplay
                     Directory = new Dictionary<string, HashSet<string>>() { { "ROOT", new HashSet<string>() } };
                     var paths = new HashSet<string>();
 
-                    if (!(GgpkRecordLoader.IndexBin is null))
+                    if (GgpkRecordLoader.IndexBin is not null)
                     {
                         for (var i = 0; i < GgpkRecordLoader.IndexBin.FileCount; i++)
                         {
@@ -152,7 +152,7 @@ namespace GgpkDisplay
                 new Thread(() =>
                 {
                     var spec = GgpkRecordLoader.LoadRecord(file);
-                    MemoryStream? old = null;
+                    Stream? old = null;
 
                     GgpkFileExplorer.Dispatcher.BeginInvoke(new Action(() =>
                     {
@@ -164,7 +164,7 @@ namespace GgpkDisplay
 
                     switch (spec)
                     {
-                        case DatSpecification datSpec when !(datSpec.Table is null) && datSpec.DataTable.Columns.Count > 1:
+                        case DatSpecification datSpec when datSpec.Table is not null && datSpec.DataTable.Columns.Count > 1:
                             GgpkFileExplorer.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 dataTab.IsSelected = true;
@@ -194,7 +194,7 @@ namespace GgpkDisplay
                             break;
                     }
 
-                    if (!(old is null))
+                    if (old is not null)
                     {
                         old.Flush();
                         old.Dispose();
@@ -203,7 +203,7 @@ namespace GgpkDisplay
             }
         }
 
-        private TreeViewItem CreateTreeViewItem(string name)
+        private static TreeViewItem CreateTreeViewItem(string name)
         {
             var item = new TreeViewItem()
             {
@@ -240,7 +240,7 @@ namespace GgpkDisplay
             FilterTimer.Start();
         }
 
-        private void FilterTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void FilterTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             FilterTimer.Stop();
 

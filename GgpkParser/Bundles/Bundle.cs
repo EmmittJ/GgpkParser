@@ -28,7 +28,7 @@ namespace GgpkParser.Bundles
         private byte[]? _decompressed = null;
         public byte[] Decompress(in Stream stream)
         {
-            if (!(_decompressed is null))
+            if (_decompressed is not null)
             {
                 return _decompressed;
             }

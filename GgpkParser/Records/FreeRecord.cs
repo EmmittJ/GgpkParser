@@ -9,7 +9,7 @@ namespace GgpkParser.Records
         public FreeRecord(in Stream stream, in RecordHeader header, in IRecord? parent = null)
         {
             Parent = parent;
-            if (!(parent is null)) parent.Children.Add(this);
+            if (parent is not null) parent.Children.Add(this);
             Length = header.Length;
             Type = header.Type;
             Offset = stream.Position - 8;

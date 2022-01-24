@@ -41,7 +41,7 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
                 if (i < elements - 1) builder.Append(", ");
             }
 
-            builder.Append("]");
+            builder.Append(']');
             Value = builder.ToString();
             stream.Position = prev;
             return this;

@@ -17,7 +17,7 @@ namespace GgpkParser.DataTypes.Specifications
     public class DatSpecification : IDataSpecification
     {
         private static readonly ulong DataSeparator = 0xbbbbbbbbbbbbbbbb;
-        public byte[] RawData { get; private set; } = new byte[0];
+        public byte[] RawData { get; private set; } = Array.Empty<byte>();
         public DataTable DataTable { get; private set; } = new DataTable();
         public string Name { get; }
         public SchemaTable? Table { get; set; }
