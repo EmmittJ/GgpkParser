@@ -1,4 +1,6 @@
 ﻿using GgpkParser.Records;
+using Microsoft.Toolkit.HighPerformance;
+using Microsoft.Toolkit.HighPerformance.Buffers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -53,24 +55,12 @@ namespace GgpkParser.Extensions
             }
         }
 
+        public static unsafe T[] Read<T>(this Stream stream, long size) where T : unmanaged => stream.Read<T>((int)size);
         public static unsafe T[] Read<T>(this Stream stream, int size) where T : unmanaged
         {
-            var result = new T[size];
-            for (int i = 0; i < size; i++)
-            {
-                result[i] = stream.Read<T>();
-            }
-            return result;
-        }
-
-        public static unsafe T[] Read<T>(this Stream stream, long size) where T : unmanaged
-        {
-            var result = new T[size];
-            for (long i = 0; i < size; i++)
-            {
-                result[i] = stream.Read<T>();
-            }
-            return result;
+            var owner = SpanOwner<T>.Allocate(size);
+            stream.Read(owner.Span.Cast<T, byte>());
+            return owner.Span.ToArray();
         }
 
         public static unsafe T[] ReadUntil<T>(this Stream stream, T terminator, bool includeTerminator = false) where T : unmanaged

@@ -1,9 +1,6 @@
 ﻿using GgpkParser.DataTypes.DatSchema;
 using System;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
 {
@@ -43,28 +40,27 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
             };
         }
 
-        public static FieldType FieldTypeFromString(string value)
+        public static FieldType FieldTypeFromString(string value) => value switch
         {
-            foreach (var type in Enum.GetValues(typeof(FieldType)).OfType<FieldType>())
-            {
-                if (typeof(FieldType).GetField(type.ToString()) is not FieldInfo field)
-                {
-                    continue;
-                }
-
-                if (field.GetCustomAttribute<DescriptionAttribute>() is not DescriptionAttribute attribute)
-                {
-                    continue;
-                }
-
-                if (attribute.Description == value)
-                {
-                    return type;
-                }
-            }
-
-            throw new NotSupportedException($"No FieldType mapping for {value} could be found.");
-        }
+            "array" => FieldType.Unknown,
+            "bool" => FieldType.Bool,
+            "i8" => FieldType.SByte,
+            "i16" => FieldType.Short,
+            "i32" => FieldType.Int,
+            "i64" => FieldType.Long,
+            "u8" => FieldType.Byte,
+            "u16" => FieldType.UShort,
+            "u32" => FieldType.UInt,
+            "u64" => FieldType.ULong,
+            "f32" => FieldType.Float,
+            "f64" => FieldType.Double,
+            "string" => FieldType.String,
+            "array[]" => FieldType.Array,
+            "row" => FieldType.Row,
+            "foreignrow" => FieldType.ForeignRow,
+            "enumrow" => FieldType.EnumRow,
+            _ => throw new NotSupportedException($"No FieldType mapping for {value} could be found.")
+        };
 
         public static int SizeOf(FieldType type, bool x64) => type switch
         {
@@ -94,39 +90,22 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
         /// <summary>
         /// For Arrays of Unknown Type.
         /// </summary>
-        [Description("array")]
         Unknown,
-        [Description("bool")]
         Bool,
-        [Description("i8")]
         SByte,
-        [Description("i16")]
         Short,
-        [Description("i32")]
         Int,
-        [Description("i64")]
         Long,
-        [Description("u8")]
         Byte,
-        [Description("u16")]
         UShort,
-        [Description("u32")]
         UInt,
-        [Description("u64")]
         ULong,
-        [Description("f32")]
         Float,
-        [Description("f64")]
         Double,
-        [Description("string")]
         String,
-        [Description("array[]")]
         Array,
-        [Description("row")]
         Row,
-        [Description("foreignrow")]
         ForeignRow,
-        [Description("enumrow")]
         EnumRow,
     }
 }
