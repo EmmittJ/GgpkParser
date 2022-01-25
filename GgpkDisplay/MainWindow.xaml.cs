@@ -59,16 +59,6 @@ namespace GgpkDisplay
                         {
                             var path = GgpkRecordLoader.IndexBin.FileInfos[i].Path;
                             paths.Add(path);
-                            if (path == "Art/UIImages1.txt")
-                            {
-                                if (GgpkRecordLoader.LoadRecord(path) is UIImagesSpecification uiimages)
-                                {
-                                    foreach (var image in uiimages.UIImages)
-                                    {
-                                        paths.Add(image.Path);
-                                    }
-                                }
-                            }
                         }
                     }
 
