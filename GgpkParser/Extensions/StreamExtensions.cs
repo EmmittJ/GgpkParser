@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GgpkParser.Extensions
 {
@@ -13,23 +14,17 @@ namespace GgpkParser.Extensions
         public static IRecord? ReadRecord(this Stream stream, IRecord? parent = null)
         {
             var header = stream.Read<RecordHeader>();
-            switch (header.Type)
+            return header.Type switch
             {
-                case RecordType.Ggpk:
-                    return new GgpkRecord(stream, header, parent);
-                case RecordType.Directory:
-                    return new DirectoryRecord(stream, header, parent);
-                case RecordType.Free:
-                    return new FreeRecord(stream, header, parent);
-                case RecordType.File:
-                    return new FileRecord(stream, header, parent);
-                default:
-                    Console.WriteLine($"Unsupported RecordType: {header.Type}");
-                    return null;
-            }
+                RecordType.Ggpk => new GgpkRecord(stream, header, parent),
+                RecordType.Directory => new DirectoryRecord(stream, header, parent),
+                RecordType.Free => new FreeRecord(stream, header, parent),
+                RecordType.File => new FileRecord(stream, header, parent),
+                _ => throw new NotSupportedException($"Unsupported RecordType: {header.Type}"),
+            };
         }
 
-        public static unsafe object Read(this Stream stream, Type type) => type switch
+        public static object Read(this Stream stream, Type type) => type switch
         {
             _ when type == typeof(bool) => stream.Read<bool>(),
             _ when type == typeof(sbyte) => stream.Read<sbyte>(),
@@ -45,25 +40,22 @@ namespace GgpkParser.Extensions
             _ => throw new NotImplementedException(),
         };
 
-        public static unsafe T Read<T>(this Stream stream) where T : unmanaged
+        public static T Read<T>(this Stream stream) where T : unmanaged
         {
-            var buffer = new byte[Unsafe.SizeOf<T>()];
-            stream.Read(buffer);
-            fixed (byte* b = &buffer[0])
-            {
-                return *(T*)b;
-            }
+            Span<byte> bytes = stackalloc byte[Unsafe.SizeOf<T>()];
+            stream.Read(bytes);
+            return MemoryMarshal.Read<T>(bytes);
         }
 
-        public static unsafe T[] Read<T>(this Stream stream, long size) where T : unmanaged => stream.Read<T>((int)size);
-        public static unsafe T[] Read<T>(this Stream stream, int size) where T : unmanaged
+        public static T[] Read<T>(this Stream stream, long size) where T : unmanaged => stream.Read<T>((int)size);
+        public static T[] Read<T>(this Stream stream, int size) where T : unmanaged
         {
             var owner = SpanOwner<T>.Allocate(size);
             stream.Read(owner.Span.Cast<T, byte>());
             return owner.Span.ToArray();
         }
 
-        public static unsafe T[] ReadUntil<T>(this Stream stream, T terminator, bool includeTerminator = false) where T : unmanaged
+        public static T[] ReadUntil<T>(this Stream stream, T terminator, bool includeTerminator = false) where T : unmanaged
         {
             var result = new List<T>();
             var current = stream.Read<T>();
@@ -81,7 +73,7 @@ namespace GgpkParser.Extensions
             return result.ToArray();
         }
 
-        public static unsafe long IndexOf<T>(this Stream stream, T value, long start = 0) where T : unmanaged
+        public static long IndexOf<T>(this Stream stream, T value, long start = 0) where T : unmanaged
         {
             var original = stream.Position;
             stream.Position = start;
