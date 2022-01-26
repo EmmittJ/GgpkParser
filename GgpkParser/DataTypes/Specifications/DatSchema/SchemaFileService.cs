@@ -1,27 +1,25 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace GgpkParser.DataTypes.DatSchema
 {
     public class SchemaFileService
     {
-        private static SchemaFile? _datSpecJson { get; set; } = null;
+        private const string SchemaFileName = "schema.min.json";
+        private static SchemaFile? _datSpecJson = null;
         public static SchemaFile Default
         {
             get
             {
-                if (_datSpecJson is null)
+                var pwd = Assembly.GetExecutingAssembly().Location;
+                if (_datSpecJson is null && new FileInfo(pwd) is { Directory: DirectoryInfo directory })
                 {
-                    var directory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName;
-                    var specFile = Path.Combine(directory, "schema.min.json");
+                    var specFile = Path.Combine(directory.FullName, SchemaFileName);
                     _datSpecJson = JsonConvert.DeserializeObject<SchemaFile>(File.ReadAllText(specFile));
                 }
 
-                return _datSpecJson;
+                return _datSpecJson ?? throw new FileNotFoundException($"{SchemaFileName} was not found in {pwd}");
             }
         }
     }

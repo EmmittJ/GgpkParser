@@ -8,22 +8,22 @@ namespace GgpkParser.Bundles
         public BundlePayload(in Stream stream)
         {
             CompressionType = (CompressionType)stream.Read<uint>();
-            unk10 = stream.Read<uint>();
+            Unk10 = stream.Read<uint>();
             UncompressedSize = stream.Read<ulong>();
             TotalPayloadSize = stream.Read<ulong>();
             BlockCount = stream.Read<int>();
             UncompressedBlockGranularity = stream.Read<uint>();
-            unk28 = stream.Read<uint>(4);
+            Unk28 = stream.Read<uint>(4);
             BlockSizes = stream.Read<uint>(BlockCount);
         }
 
         public CompressionType CompressionType { get; private set; }
-        public uint unk10 { get; private set; }
+        public uint Unk10 { get; private set; }
         public ulong UncompressedSize { get; private set; }
         public ulong TotalPayloadSize { get; private set; }
         public int BlockCount { get; private set; }
         public uint UncompressedBlockGranularity { get; private set; }
-        public uint[] unk28 { get; private set; }
+        public uint[] Unk28 { get; private set; }
         public uint[] BlockSizes { get; private set; }
     }
 

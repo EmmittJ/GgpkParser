@@ -16,7 +16,7 @@ namespace GgpkParser.DataTypes.Specifications
     [Specification(FileExtension = "UIXbox.txt", Priority = 1)]
     public class UIImagesSpecification : IDataSpecification
     {
-        public byte[] RawData { get; private set; } = new byte[0];
+        public byte[] RawData { get; private set; } = Array.Empty<byte>();
         public DataTable DataTable { get; private set; } = new DataTable();
         public string Name { get; }
 
@@ -33,14 +33,34 @@ namespace GgpkParser.DataTypes.Specifications
             foreach (var row in rows)
             {
                 var parse = row.Split('"').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-                if (parse.Length < 3) continue;
+                if (parse.Length < 3)
+                {
+                    continue;
+                }
+
                 var path = parse[0];
                 var texture = parse[1];
                 var rect = parse[2].Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-                if (!int.TryParse(rect[0], out var x)) throw new InvalidDataException($"Could not get {nameof(x)} out of ${row}");
-                if (!int.TryParse(rect[1], out var y)) throw new InvalidDataException($"Could not get {nameof(y)} out of ${row}");
-                if (!int.TryParse(rect[2], out var w)) throw new InvalidDataException($"Could not get {nameof(w)} out of ${row}");
-                if (!int.TryParse(rect[3], out var h)) throw new InvalidDataException($"Could not get {nameof(h)} out of ${row}");
+                if (!int.TryParse(rect[0], out var x))
+                {
+                    throw new InvalidDataException($"Could not get {nameof(x)} out of ${row}");
+                }
+
+                if (!int.TryParse(rect[1], out var y))
+                {
+                    throw new InvalidDataException($"Could not get {nameof(y)} out of ${row}");
+                }
+
+                if (!int.TryParse(rect[2], out var w))
+                {
+                    throw new InvalidDataException($"Could not get {nameof(w)} out of ${row}");
+                }
+
+                if (!int.TryParse(rect[3], out var h))
+                {
+                    throw new InvalidDataException($"Could not get {nameof(h)} out of ${row}");
+                }
+
                 UIImages.Add(new UIImage(path, texture, new System.Drawing.Rectangle(x, y, w - x, h - y)));
             }
 
@@ -119,6 +139,6 @@ namespace GgpkParser.DataTypes.Specifications
             });
         }
 
-        public List<UIImage> UIImages = new List<UIImage>();
+        public List<UIImage> UIImages = new();
     }
 }

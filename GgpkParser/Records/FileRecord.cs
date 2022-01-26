@@ -10,14 +10,18 @@ namespace GgpkParser.Records
         public FileRecord(in Stream stream, in RecordHeader header, in IRecord? parent = null)
         {
             Parent = parent;
-            if (parent is not null) parent.Children.Add(this);
+            if (parent is not null)
+            {
+                parent.Children.Add(this);
+            }
+
             Length = header.Length;
             Type = header.Type;
             Offset = stream.Position - 8;
 
             NameLength = stream.Read<int>();
             Hash = stream.Read<byte>(32);
-            Name = new string(stream.ReadUntil('\0'));
+            Name = new string(stream.Read<char>(NameLength), 0, NameLength - 1);
             var dataLength = Offset + Length - stream.Position;
             Data = new Data(stream.Position, dataLength);
             stream.Seek(dataLength, SeekOrigin.Current);

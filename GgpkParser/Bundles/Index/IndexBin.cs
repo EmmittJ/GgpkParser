@@ -39,7 +39,7 @@ namespace GgpkParser.Bundles.Index
             PathBundle = new Bundle(stream, new Data(stream.Position, Offset + Length - stream.Position));
             using var pathBundleMemory = new MemoryStream(PathBundle.Decompress(stream));
 
-            for (int i = 0; i < PathRepCount; i++)
+            for (var i = 0; i < PathRepCount; i++)
             {
                 Paths.AddRange(PathReps[i].GeneratePaths(pathBundleMemory));
             }
@@ -60,7 +60,7 @@ namespace GgpkParser.Bundles.Index
         public List<BundleInfo> BundleInfos { get; } = new List<BundleInfo>();
         public uint FileCount { get; }
         public List<FileInfo> FileInfos { get; } = new List<FileInfo>();
-        
+
         public uint PathRepCount { get; }
         public List<PathRep> PathReps { get; } = new List<PathRep>();
 

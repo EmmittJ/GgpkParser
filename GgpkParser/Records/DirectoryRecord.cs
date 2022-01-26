@@ -1,7 +1,6 @@
 ﻿using GgpkParser.Extensions;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace GgpkParser.Records
 {
@@ -10,7 +9,11 @@ namespace GgpkParser.Records
         public DirectoryRecord(in Stream stream, in RecordHeader header, in IRecord? parent = null)
         {
             Parent = parent;
-            if (parent is not null) parent.Children.Add(this);
+            if (parent is not null)
+            {
+                parent.Children.Add(this);
+            }
+
             Length = header.Length;
             Type = header.Type;
             Offset = stream.Position - 8;
@@ -18,8 +21,7 @@ namespace GgpkParser.Records
             NameLength = stream.Read<int>();
             EntryCount = stream.Read<int>();
             Hash = stream.Read<byte>(32);
-            Name = Encoding.Unicode.GetString(stream.Read<byte>((NameLength - 1) * 2));
-            stream.Read<char>(); //no-op '\0'
+            Name = new string(stream.Read<char>(NameLength), 0, NameLength - 1);
             Entries = new (uint Hash, long Offset)[EntryCount];
             for (var i = 0; i < EntryCount; i++)
             {

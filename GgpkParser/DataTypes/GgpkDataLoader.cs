@@ -17,7 +17,7 @@ namespace GgpkParser.DataTypes
                 let filtered = attributes.Cast<SpecificationAttribute>().Where(x => name.EndsWith(x.FileExtension) || string.IsNullOrWhiteSpace(x.FileExtension))
                 where filtered != null && filtered.Any()
                 select new { Type = t, Priority = filtered.Max(x => x.Priority) };
-            
+
             var type = types.OrderByDescending(x => x.Priority).First();
             return Activator.CreateInstance(type.Type, name) as IDataSpecification ?? new RawBytesSpecification();
         }

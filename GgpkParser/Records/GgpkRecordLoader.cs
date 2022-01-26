@@ -13,10 +13,7 @@ namespace GgpkParser.Records
     {
         private const string INDEX_BIN = "_.index.bin";
 
-        public GgpkRecordLoader(string path)
-        {
-            Stream = File.OpenRead(path);
-        }
+        public GgpkRecordLoader(string path) => Stream = File.OpenRead(path);
 
         private FileStream Stream { get; }
         public IndexBin? IndexBin { get; private set; } = null;
@@ -50,7 +47,10 @@ namespace GgpkParser.Records
                 Stream.Position = offset;
 
                 var record = Stream.ReadRecord(parent);
-                if (record is null) continue;
+                if (record is null)
+                {
+                    continue;
+                }
 
                 if (!Records.ContainsKey(record.Type))
                 {

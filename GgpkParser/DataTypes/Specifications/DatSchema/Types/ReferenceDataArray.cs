@@ -1,6 +1,5 @@
 ﻿using GgpkParser.Extensions;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
@@ -38,7 +37,10 @@ namespace GgpkParser.DataTypes.Specifications.DatSchema.Types
                 }
 
                 builder.Append(_fieldData.Value);
-                if (i < elements - 1) builder.Append(", ");
+                if (i < elements - 1)
+                {
+                    builder.Append(", ");
+                }
             }
 
             builder.Append(']');

@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace GgpkDisplay
 {
@@ -205,8 +204,9 @@ namespace GgpkDisplay
             return item;
         }
 
-        System.Timers.Timer? _filterTimer = null;
-        System.Timers.Timer FilterTimer
+        private System.Timers.Timer? _filterTimer = null;
+
+        private System.Timers.Timer FilterTimer
         {
             get
             {
